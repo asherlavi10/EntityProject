@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Entity";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Entity</h1>
+</div>
+@model WebApplication6.Models.EntityModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+ <style>
+.myform{
+  border: 2px outset black;
+  background-color: white  ;
+  text-align: center;
+  font-family: Arial;
+  
+}
+
+.myforma {
+  font-size: large;
+}
+
+
+
+</style>
+    <meta name="viewport" content="width=device-width" />
+    <title>Form</title>
+</head>
+<body>
+
+
+
+    <div class="myform" >
+            <h1 class="display-4">Entity form</h1>
+
+        <form asp-action="Send" method="post"  >
+            @*<div  class="myforma">*@
+                <div class="row">
+                <div class="col-2"><label asp-for="Name" class="" >Name:</label></div>
+                <div class="col-4"><input asp-for="Name" /></div>
+            </div>
+            @*<div class="myforma">*@
+                <div class="row">
+                <div class="col-2"><label asp-for="X">X:</label></div>
+                <div class="col-4"><input asp-for="X" /></div>
+            </div>
+            @*<div class="myforma">*@
+                <div class="row">
+                <div class="col-2"><label asp-for="Y">Y:</label></div>
+                <div class="col-4"><input asp-for="Y" /></div>
+            </div>
+            <div>
+               <p></p>
+            <button type="submit">Send</button>
+             <p></p>
+        </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

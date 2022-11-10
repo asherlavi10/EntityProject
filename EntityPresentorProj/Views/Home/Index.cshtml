@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Entity Presentor";
+} 
+
+@model   ImageModel
+
+<div class="text-center">
+    <h1 class="display-4">Where is  my entity ?</h1> 
+    <p>@Model?.Name  @Model?.UpdateDate </p>
+    <input id="dateUpdate" type="text" value="" />
+ 
+    <img id = "paintPic" src='../wwwroot/img/world-map.gif' alt=""  width="500" height="600"/>
+
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
