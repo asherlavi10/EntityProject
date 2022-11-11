@@ -25,40 +25,42 @@
   font-size: large;
 }
 
-
+.text-danger{
+  color:red !important;
+}
 
 </style>
     <meta name="viewport" content="width=device-width" />
     <title>Form</title>
 </head>
 <body>
-
-
-
-    <div class="myform" >
+            <div class="myform" >
             <h1 class="display-4">Entity form</h1>
 
         <form asp-action="Send" method="post"  >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @*<div  class="myforma">*@
                 <div class="row">
                 <div class="col-2"><label asp-for="Name" class="" >Name:</label></div>
                 <div class="col-4"><input asp-for="Name" /></div>
-            </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>  
             @*<div class="myforma">*@
                 <div class="row">
                 <div class="col-2"><label asp-for="X">X:</label></div>
                 <div class="col-4"><input asp-for="X" /></div>
+                <span asp-validation-for="X" class="text-danger"></span>
             </div>
             @*<div class="myforma">*@
                 <div class="row">
                 <div class="col-2"><label asp-for="Y">Y:</label></div>
                 <div class="col-4"><input asp-for="Y" /></div>
+                <span asp-validation-for="Y" class="text-danger"></span>
             </div>
             <div>
-               <p></p>
-            <button type="submit">Send</button>
-             <p></p>
-        </div>
+                 <p></p>
+                 <button type="submit">Send</button>
+             </div>
 
         </form>
     </div>

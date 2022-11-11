@@ -36,12 +36,20 @@ namespace WebApplication6.Controllers
         [HttpPost]
         public async Task<IActionResult> SendAsync(EntityModel entity)
         {
-            var entityDto = _mapper.Map<EntityDto>(entity);
+            if (ModelState.IsValid)
+            {
 
-            //call  to entity presenation application
-            var client = _httpClientFactory.CreateClient("EntityPresentor");
-            var res = await client.PostAsJsonAsync<EntityDto>("/Home/GetEntity", entityDto);
-            entity.ReurnMessage = "Your entity was updated.";
+                var entityDto = _mapper.Map<EntityDataContract.EntityDto>(entity);
+               if(_validator.Validate(entityDto).IsValid)
+                {
+                    //call  to entity presenation application
+                    var client = _httpClientFactory.CreateClient("EntityPresentor");
+                    var res = await client.PostAsJsonAsync<EntityDataContract.EntityDto>("/Home/CreateNewMap", entityDto);
+                }
+
+                
+                
+            }
             return View(entity);
         }
 

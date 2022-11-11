@@ -1,10 +1,12 @@
 
+using EntityDataContract.Validor;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.AddTransient<IValidator<EntityDataContract.EntityDto>, EntityValidator>();
 // Add services to the container.
 
 builder.Services.AddAutoMapper(typeof(Program));
@@ -13,9 +15,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient("EntityPresentor", HttpClient => 
 {
-    HttpClient.BaseAddress = new Uri("https://localhost:7116");
+
+    HttpClient.BaseAddress = new Uri(builder.Configuration.GetSection("EntityPresentorUrl").Value);
+    //  new Uri("https://localhost:7116");
 });
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

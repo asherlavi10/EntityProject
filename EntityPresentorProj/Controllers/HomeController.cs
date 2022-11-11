@@ -6,6 +6,7 @@ using EntityPresentorProj.Services;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -15,20 +16,19 @@ namespace EntityPresentorProj.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IDrawPpointService _drawPpointService;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly IConfiguration _configuration;
-        public HomeController(ILogger<HomeController> logger, IDrawPpointService drawPpointService, IWebHostEnvironment hostEnvironment, IConfiguration configuration)
+        private readonly IMangeEntityPoint _mangeEntityPoint;
+        
+        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment hostEnvironment, IMangeEntityPoint mangeEntityPoint)
         {
             _logger = logger;
-            _drawPpointService = drawPpointService;
             _hostEnvironment = hostEnvironment;
-            _configuration = configuration;
+            _mangeEntityPoint = mangeEntityPoint;   
         }
 
         public IActionResult Index()
         {
-            
+         
             return View();
         }
 
@@ -41,38 +41,23 @@ namespace EntityPresentorProj.Controllers
 
        
         [HttpPost]
-        public async Task<IActionResult> GetEntityAsync([FromBody] EntityDto entityDto)
+        public async Task<IActionResult> CreateNewMap([FromBody] EntityDataContract.EntityDto entityDto)
         {
-           
-           var curImg = HttpContext.Session.GetString("curImg");
-            if (string.IsNullOrEmpty(curImg))
+
+            if (ModelState.IsValid)
             {
-                HttpContext.Session.SetString("curImg", Consts.MainImage);
-                curImg = Consts.MainImage ;
+                var imgNewGuid = $"/img/{Guid.NewGuid().ToString()}.gif";
+                var newimage = $"../wwwroot{imgNewGuid}";
+
+                _ = _mangeEntityPoint.GetCurImage("curImg")
+                                 .SetBasePath(_hostEnvironment.WebRootPath)
+                                  .DrawImage(entityDto, imgNewGuid)
+                                  .SetCurImage("curImg", imgNewGuid)
+                                 .PublishToClientImageAsync(newimage);
+
             }
-            
-            var basewwwrootPath = _hostEnvironment.WebRootPath;
-            var imgNewGuid = $"/img/{Guid.NewGuid().ToString()}.gif";
-            var entity = _drawPpointService.DrawEntity(entityDto, basewwwrootPath + curImg, basewwwrootPath + imgNewGuid);
-            
-            HttpContext.Session.SetString("curImg", imgNewGuid);
-            // publish signalr 
-            #region signalr
 
-            var url = _configuration["SignalrUrl"];
-            HubConnection connection = new HubConnectionBuilder()
-           .WithUrl("http://localhost:5116/chatHub", options => {
-               options.Transports = HttpTransportType.WebSockets;
-           }).WithAutomaticReconnect().Build();
-
-            var newimage = $"../wwwroot{imgNewGuid}";
-            var date =DateTime.Now.ToString();
-            await connection.StartAsync();
-            await connection.InvokeAsync("SendMessage",date, newimage);
-            
-            #endregion
-
-            return View(new ImageModel { Name = Consts.MainImage, UpdateDate = DateTime.Now });
+            return View();
 
             
 

@@ -1,7 +1,9 @@
+using EntityDataContract;
+using EntityPresentorProj.Extention;
 using EntityPresentorProj.Hubs;
+using EntityPresentorProj.Models;
 using EntityPresentorProj.Services;
 using Microsoft.Extensions.FileProviders;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,9 +11,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-builder.Services.AddTransient<IDrawPpointService, DrawPpointService>();
+
+builder.Services.AddEntityServies();
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddStackExchangeRedisCache(option =>
+{
+    option.Configuration = builder.Configuration.GetSection("RedisCacheUrl").Value;
+    option.InstanceName = "";
+});
+
+
+builder.Services.Configure<SignalROptions>(
+    builder.Configuration.GetSection(SignalROptions.Name));
+
+builder.Services.Configure<ImageDrawOptions>(
+    builder.Configuration.GetSection(ImageDrawOptions.Name));
 
 builder.Services.AddSession(options =>
 {
@@ -46,4 +61,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<ImageHub>("/chatHub");
+
+var cahcheService = app.Services.GetService<ICacheService>();
+cahcheService.SetStringValue("curImg", Consts.MainImage);
+
 app.Run();

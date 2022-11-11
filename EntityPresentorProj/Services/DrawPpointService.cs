@@ -1,4 +1,6 @@
 ﻿using EntityDataContract;
+using EntityPresentorProj.Models;
+using Microsoft.Extensions.Options;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -6,7 +8,13 @@ namespace EntityPresentorProj.Services
 {
     public class DrawPpointService : IDrawPpointService
     {
-      
+        ImageDrawOptions _imageDrawOptions;
+
+        public DrawPpointService(IOptions<ImageDrawOptions> imageDrawOptions)
+        {
+            _imageDrawOptions = imageDrawOptions.Value;
+        }
+
         public EntityDto DrawEntity(EntityDto entityDto, string imgPath, string newPath)
         {
             Bitmap originalBmp = (Bitmap)Image.FromFile(imgPath);
@@ -20,21 +28,23 @@ namespace EntityPresentorProj.Services
                 // Draw the original bitmap onto the graphics of the new bitmap
                 g.DrawImage(originalBmp, 0, 0);
                 // Use g to do whatever you like
-                Pen pen = new Pen(Brushes.Red, 15);
-                Rectangle rect = new Rectangle(entityDto.X, entityDto.X,100, 100);
-                g.DrawEllipse(pen, rect);
+                //Pen pen = new Pen(Brushes.Red, 15);
+                System.Drawing.Pen pen = new System.Drawing.Pen(Brushes.Red, _imageDrawOptions.Pen.Width);
+                //Rectangle rect = new Rectangle((int)entityDto.X, (int)entityDto.X, (int)entityDto.Y, (int)entityDto.Y);
+
+                g.DrawEllipse(pen, entityDto.X,entityDto.Y, _imageDrawOptions.Width, _imageDrawOptions.Height);
                 
 
                 // Create string to draw.
                 String drawString = entityDto.Name;
 
                 // Create font and brush.
-                Font drawFont = new Font("Arial", 20);
+                Font drawFont = new Font(_imageDrawOptions.FontFamily, _imageDrawOptions.FontSize);
                 SolidBrush drawBrush = new SolidBrush(Color.Red);
 
                 // Create point for upper-left corner of drawing.
-                float x = 150.0F;
-                float y = 50.0F;
+                float x = entityDto.X;
+                float y = entityDto.Y;
 
                 // Set format of string.
                 StringFormat drawFormat = new StringFormat();
@@ -42,10 +52,10 @@ namespace EntityPresentorProj.Services
 
                 // Draw string to screen.
                 g.DrawString(drawString, drawFont, drawBrush, x, y, drawFormat);
-            
-            
 
-        }
+
+
+            }
             tempBitmap.Save(newPath, System.Drawing.Imaging.ImageFormat.Gif);
             return entityDto;
         }

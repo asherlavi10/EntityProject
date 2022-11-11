@@ -5,13 +5,14 @@ namespace EntityDataContract
     public class EntityDto
     {
         [Required]
-
         public string Name { get; set; }
         [Required]
-
-        public int X { get; set; }
+        [Range(0, 999.99)]
+        
+        public float X { get; set; }
         [Required]
-        public int Y { get; set; }
-        public string ReurnMessage { get; set; }
+        [Range(0, 999.99)]
+        public float Y { get; set; }
+        
     }
 }
