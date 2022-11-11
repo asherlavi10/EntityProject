@@ -46,6 +46,7 @@ namespace EntityPresentorProj.Controllers
 
             if (ModelState.IsValid)
             {
+            
                 var imgNewGuid = $"/img/{Guid.NewGuid().ToString()}.gif";
                 var newimage = $"../wwwroot{imgNewGuid}";
 
@@ -58,8 +59,6 @@ namespace EntityPresentorProj.Controllers
             }
 
             return View();
-
-            
 
         }
     }

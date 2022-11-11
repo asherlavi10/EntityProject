@@ -20,6 +20,8 @@ namespace EntityPresentorProj.Services
             _signalROptions = signalROptions.Value;
         }
 
+        public string CurImg { get =>  _currImage; }
+        
         public MangeEntityPoint GetCurImage(string key)
         {
             _currImage = _cacheService.GetValueAsString(key);
@@ -60,5 +62,6 @@ namespace EntityPresentorProj.Services
             _basewwwrootPath = basewwwrootPath;
             return this;
         }
+        
     }
 }
