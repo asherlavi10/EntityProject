@@ -60,7 +60,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapHub<ImageHub>("/chatHub");
+app.MapHub<ImageHub>("/DrawImageHub");
 
 var cahcheService = app.Services.GetService<ICacheService>();
 cahcheService.SetStringValue("curImg", Consts.MainImage);
