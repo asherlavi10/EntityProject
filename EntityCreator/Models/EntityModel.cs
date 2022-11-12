@@ -15,5 +15,6 @@ namespace WebApplication6.Models
         [Range(0, 999.99)]
         public float Y { get; set; }
 
+
     }
 }

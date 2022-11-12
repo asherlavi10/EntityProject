@@ -50,10 +50,11 @@ namespace EntityPresentorProj.Controllers
                 var imgNewGuid = $"/img/{Guid.NewGuid().ToString()}.gif";
                 var newimage = $"../wwwroot{imgNewGuid}";
 
-                _ = _mangeEntityPoint.GetCurImage("curImg")
+                var curImg = Consts.PrifixKey +  entityDto.AppKey;
+                _ = _mangeEntityPoint.GetCurImage(curImg)
                                  .SetBasePath(_hostEnvironment.WebRootPath)
                                   .DrawImage(entityDto, imgNewGuid)
-                                  .SetCurImage("curImg", imgNewGuid)
+                                  .SetCurImage(curImg, imgNewGuid)
                                  .PublishToClientImageAsync(newimage);
 
             }

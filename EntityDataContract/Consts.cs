@@ -9,5 +9,6 @@ namespace EntityDataContract
     public  class Consts
     {
         public const string MainImage = "/img/world-map.gif";
+        public const string PrifixKey = "curImg";
     }
 }

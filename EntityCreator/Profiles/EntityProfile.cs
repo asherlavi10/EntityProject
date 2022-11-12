@@ -9,7 +9,7 @@ namespace EntityCreator.Profiles
         public EntityProfile()
         {
             CreateMap<EntityDto, EntityModel>();
-            CreateMap<EntityModel, EntityDto>();
+            CreateMap<EntityModel, EntityDto>().ForMember(x=>x.AppKey,y=>y.Ignore());
 
         }
     }
