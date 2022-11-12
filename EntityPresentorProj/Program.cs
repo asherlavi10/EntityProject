@@ -4,6 +4,8 @@ using EntityPresentorProj.Hubs;
 using EntityPresentorProj.Models;
 using EntityPresentorProj.Services;
 using Microsoft.Extensions.FileProviders;
+using StackExchange.Redis;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -64,5 +66,7 @@ app.MapHub<ImageHub>("/DrawImageHub");
 
 var cahcheService = app.Services.GetService<ICacheService>();
 cahcheService.SetStringValue("curImg", Consts.MainImage);
+
+
 
 app.Run();
