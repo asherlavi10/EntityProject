@@ -35,7 +35,7 @@ namespace EntityPresentorProj.Services
         }
         public MangeEntityPoint DrawImage(EntityDto entityDto, string newPath)
         {
-            _drawPpointService.DrawEntity(entityDto, _basewwwrootPath + _currImage, _basewwwrootPath+newPath);
+            _drawPpointService.DrawEntity(entityDto, _basewwwrootPath +"\\" +_currImage, _basewwwrootPath+newPath);
             return this;
         }
 

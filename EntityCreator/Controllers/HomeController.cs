@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using EntityCreator;
 using EntityDataContract;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Diagnostics;
 using WebApplication6.Models;
 
@@ -13,13 +16,19 @@ namespace WebApplication6.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
-        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IMapper mapper)
+        private readonly IValidator<EntityDataContract.EntityDto> _validator;
+        private readonly IConfiguration _configuration;
+        private readonly RabbitSender _rabbitSender;
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IMapper mapper, IValidator<EntityDto> validator, IConfiguration configuration, RabbitSender rabbitSender)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             _mapper = mapper;
+            _validator = validator;
+            _configuration = configuration;
+            _rabbitSender = rabbitSender;
         }
-        
+
         public IActionResult Index()
         {
             return View();
@@ -38,13 +47,24 @@ namespace WebApplication6.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                
                 var entityDto = _mapper.Map<EntityDataContract.EntityDto>(entity);
-               if(_validator.Validate(entityDto).IsValid)
+                entityDto.AppKey = _configuration.GetSection("AppEntityKey")?.Value;
+                if (_validator.Validate(entityDto).IsValid)
                 {
+                    var res = _configuration.GetSection("UseRedisPubsub");
                     //call  to entity presenation application
-                    var client = _httpClientFactory.CreateClient("EntityPresentor");
-                    var res = await client.PostAsJsonAsync<EntityDataContract.EntityDto>("/Home/CreateNewMap", entityDto);
+                    if(res.Value != true.ToString())
+                    {
+                        _rabbitSender.PublishMessage<EntityDto>(entityDto, "entity.create");
+                    }
+                    else
+                    {
+                        var client = _httpClientFactory.CreateClient("EntityPresentor");
+                        await client.PostAsJsonAsync<EntityDataContract.EntityDto>("/Home/CreateNewMap", entityDto);
+                    }
+                    
+                    
                 }
 
                 

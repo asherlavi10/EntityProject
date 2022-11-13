@@ -1,8 +1,10 @@
 using EntityDataContract;
+using EntityPresentorProj;
 using EntityPresentorProj.Extention;
 using EntityPresentorProj.Hubs;
 using EntityPresentorProj.Models;
 using EntityPresentorProj.Services;
+using Messaging;
 using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 
@@ -28,7 +30,16 @@ builder.Services.Configure<SignalROptions>(
     builder.Configuration.GetSection(SignalROptions.Name));
 
 builder.Services.Configure<ImageDrawOptions>(
-    builder.Configuration.GetSection(ImageDrawOptions.Name));
+builder.Configuration.GetSection(ImageDrawOptions.Name));
+
+builder.Services.SetUpRabbitMq(builder.Configuration);
+
+builder.Services.AddHostedService<RabbitReceiver>();
+builder.Services.AddHostedService<RedisSubscriber>();
+
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+          ConnectionMultiplexer.Connect(builder.Configuration.GetSection("RedisCacheUrl").Value));
 
 builder.Services.AddSession(options =>
 {
@@ -62,11 +73,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
 app.MapHub<ImageHub>("/DrawImageHub");
 
 var cahcheService = app.Services.GetService<ICacheService>();
 cahcheService.SetStringValue("curImg", Consts.MainImage);
-
 
 
 app.Run();

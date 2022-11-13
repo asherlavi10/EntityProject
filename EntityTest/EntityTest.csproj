@@ -24,8 +24,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EntityCreator\EntityCreator.csproj" />
-    <ProjectReference Include="..\EntityDataContract\EntityDto.csproj" />
     <ProjectReference Include="..\EntityPresentorProj\EntityPresentorProj.csproj" />
+    <ProjectReference Include="..\Messaging.Common\Messaging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EntityDto">
+      <HintPath>..\Libs\EntityDto.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

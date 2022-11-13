@@ -1,8 +1,13 @@
 
+using EntityCreator;
+using EntityDataContract;
 using EntityDataContract.Validor;
 using FluentValidation;
+using Messaging;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +25,10 @@ builder.Services.AddHttpClient("EntityPresentor", HttpClient =>
     //  new Uri("https://localhost:7116");
 });
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+builder.Services.SetUpRabbitMq(builder.Configuration);
+builder.Services.AddSingleton<RabbitSender>();
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -46,5 +55,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

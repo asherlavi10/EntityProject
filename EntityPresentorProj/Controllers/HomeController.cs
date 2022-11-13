@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Diagnostics;
 using System.Drawing;
+using System.Text.Json;
 
 namespace EntityPresentorProj.Controllers
 {
@@ -17,15 +18,13 @@ namespace EntityPresentorProj.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly IMangeEntityPoint _mangeEntityPoint;
-        private readonly IConfiguration _configuration;
-        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment hostEnvironment, IMangeEntityPoint mangeEntityPoint, IConfiguration configuration)
+        
+        
+        private readonly IConnectionMultiplexer _connectionMultiplexer;
+        public HomeController(ILogger<HomeController> logger, IConnectionMultiplexer connectionMultiplexer)
         {
             _logger = logger;
-            _hostEnvironment = hostEnvironment;
-            _mangeEntityPoint = mangeEntityPoint;
-            _configuration = configuration;
+            _connectionMultiplexer = connectionMultiplexer;
         }
 
         public IActionResult Index()
@@ -48,32 +47,13 @@ namespace EntityPresentorProj.Controllers
 
             if (ModelState.IsValid)
             {
-            
                 
-                using ConnectionMultiplexer redis =   ConnectionMultiplexer.Connect(_configuration.GetSection("RedisCacheUrl").Value);
-                var sub = redis.GetSubscriber();
-
-                sub.Subscribe(Consts.RedisChanelForNewEntity, (channel, imgNewGuid) => {
-
-                    var newimage = $"../wwwroot{imgNewGuid}";
-
-                    var curImg = Consts.PrifixKey + entityDto.AppKey;
-                    _ = _mangeEntityPoint.GetCurImage(curImg)
-                                     .SetBasePath(_hostEnvironment.WebRootPath)
-                                      .DrawImage(entityDto, imgNewGuid)
-                                      .SetCurImage(curImg, imgNewGuid)
-                                     .PublishToClientImageAsync(newimage);
-
-                });
-
                 //create a publisher
-                var pub = redis.GetSubscriber();
-                var count = pub.Publish(Consts.RedisChanelForNewEntity, $"/img/{Guid.NewGuid().ToString()}.gif");
-                //ISubscriber sub = redis.GetSubscriber();
+                var pub = _connectionMultiplexer.GetSubscriber();
+                EntityMessage entityMessage = new EntityMessage { EntityDto = entityDto, NewImage = $"/img/{Guid.NewGuid().ToString()}.gif" };
+                var obj=  JsonSerializer.Serialize<EntityMessage>(entityMessage);
+                var count = pub.Publish(Consts.RedisChanelForNewEntity, obj);
                 
-                
-                
-
             }
 
             return View();

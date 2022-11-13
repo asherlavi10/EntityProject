@@ -12,7 +12,7 @@ namespace EntityPresentorProj.Extention
             services.AddTransient<ICacheService, CacheService>();
             services.AddTransient<IMangeEntityPoint, MangeEntityPoint>();
             services.AddTransient<IValidator<EntityDataContract.EntityDto>, EntityValidator>();
-
+            services.AddTransient<IMangeEntityPointService, MangeEntityPointService>();
             return services;
         }
     }

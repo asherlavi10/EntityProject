@@ -11,6 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityPresentorProj", "Enti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityTest", "EntityTest\EntityTest.csproj", "{DD5B597D-DCA6-40C6-B4A0-636504599D38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisSubscribeTest", "RedisSubscribeTest\RedisSubscribeTest.csproj", "{6EAA7978-43E0-4C98-BC2C-349DAE0534C7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{86D67D42-F6D8-47CB-884C-CB9EBD3FD21D}"
+	ProjectSection(SolutionItems) = preProject
+		EntityDataContract\bin\Debug\net6.0\EntityDto.dll = EntityDataContract\bin\Debug\net6.0\EntityDto.dll
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging", "Messaging.Common\Messaging.csproj", "{460541CB-F1DD-461B-AC99-D3AF3AB41907}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +42,14 @@ Global
 		{DD5B597D-DCA6-40C6-B4A0-636504599D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD5B597D-DCA6-40C6-B4A0-636504599D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD5B597D-DCA6-40C6-B4A0-636504599D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAA7978-43E0-4C98-BC2C-349DAE0534C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAA7978-43E0-4C98-BC2C-349DAE0534C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAA7978-43E0-4C98-BC2C-349DAE0534C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAA7978-43E0-4C98-BC2C-349DAE0534C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{460541CB-F1DD-461B-AC99-D3AF3AB41907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{460541CB-F1DD-461B-AC99-D3AF3AB41907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{460541CB-F1DD-461B-AC99-D3AF3AB41907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{460541CB-F1DD-461B-AC99-D3AF3AB41907}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/DrawImageHub").bui
 //document.getElementById("sendButton").disabled = true;
 
 connection.on("ReceiveMessage", function (user, message) {
-
+alert(message);
 var img =document.getElementById("paintPic");
 img.src= message;
 document.getElementById("dateUpdate").value=user;
