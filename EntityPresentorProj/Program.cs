@@ -77,7 +77,8 @@ app.MapControllerRoute(
 app.MapHub<ImageHub>("/DrawImageHub");
 
 var cahcheService = app.Services.GetService<ICacheService>();
-cahcheService.SetStringValue("curImg", Consts.MainImage);
+// only for me  to start from clear image need to delete
+cahcheService.SetStringValue("curImg1234", Consts.MainImage);
 
 
 app.Run();

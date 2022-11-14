@@ -1,5 +1,7 @@
 
 using EntityCreator;
+using EntityCreator.Sender;
+using EntityCreator.Services;
 using EntityDataContract;
 using EntityDataContract.Validor;
 using FluentValidation;
@@ -13,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IValidator<EntityDataContract.EntityDto>, EntityValidator>();
 // Add services to the container.
-
+builder.Services.AddTransient<ISendEntityFactory, SendEntityFactory>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddEndpointsApiExplorer();
@@ -27,7 +29,7 @@ builder.Services.AddHttpClient("EntityPresentor", HttpClient =>
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.SetUpRabbitMq(builder.Configuration);
-builder.Services.AddSingleton<RabbitSender>();
+builder.Services.AddSingleton<IRabbitSender,RabbitSender>();
 
 
 var app = builder.Build();

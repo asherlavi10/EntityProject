@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace EntityCreator
 {
-	public class RabbitSender : ISender
+	public class RabbitSender : IRabbitSender
 	{
 		private readonly IModel _channel;
 		private readonly RabbitMqSettings _rabbitSettings;
