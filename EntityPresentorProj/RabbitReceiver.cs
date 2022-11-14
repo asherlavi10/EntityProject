@@ -14,19 +14,17 @@ namespace EntityPresentorProj
 	{
 		private readonly RabbitMqSettings _rabbitSettings;
 		private readonly IModel _channel;
-		private readonly IHubContext<ImageHub> _imageHub;
-		private readonly IMangeEntityPoint _mangeEntityPoint;
         private readonly IWebHostEnvironment _hostEnvironment;
-	
-		private readonly IConfiguration _configuration;
-        public RabbitReceiver(RabbitMqSettings rabbitSettings, IModel channel, IHubContext<ImageHub> hub, IMangeEntityPoint mangeEntityPoint, IWebHostEnvironment hostEnvironment , IConfiguration configuration)
+		private readonly IMangeEntityPointService _mangeEntityPointService;
+		
+        public RabbitReceiver(RabbitMqSettings rabbitSettings, IModel channel,  IWebHostEnvironment hostEnvironment, IMangeEntityPointService mangeEntityPointService)
         {
             _rabbitSettings = rabbitSettings;
             _channel = channel;
-            _imageHub = hub;
-            _mangeEntityPoint = mangeEntityPoint;
+        
             _hostEnvironment = hostEnvironment;
-			_configuration = configuration;
+        
+            _mangeEntityPointService = mangeEntityPointService;
         }
 
         public override bool Equals(object? obj)
@@ -72,17 +70,9 @@ namespace EntityPresentorProj
 				var message = Encoding.UTF8.GetString(body);
 				var entity = JsonSerializer.Deserialize<EntityDataContract.EntityDto>(message);
 				var imgNewGuid = $"/img/{Guid.NewGuid().ToString()}.gif";
-				var newimage = $"/wwwroot{imgNewGuid}";
-
-				var curImg = Consts.PrifixKey + entity.AppKey;
-				_ = _mangeEntityPoint.GetCurImage(curImg)
-								 .SetBasePath(_hostEnvironment.WebRootPath)
-								  .DrawImage(entity, imgNewGuid)
-								  .SetCurImage(curImg, imgNewGuid)
-								 .PublishToClientImageAsync(newimage);
-
-				await _imageHub.Clients.All.SendAsync("ReceiveMessage",DateTime.Now.ToString(), newimage);
-
+				
+				_mangeEntityPointService.CreateNewImage(new Models.EntityMessage { EntityDto = entity, NewImage = imgNewGuid });
+				
 				_channel.BasicAck(ea.DeliveryTag, false);
 			};
 

@@ -24,7 +24,7 @@ builder.Services.AddHttpClient("EntityPresentor", HttpClient =>
 {
 
     HttpClient.BaseAddress = new Uri(builder.Configuration.GetSection("EntityPresentorUrl").Value);
-    //  new Uri("https://localhost:7116");
+    
 });
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
